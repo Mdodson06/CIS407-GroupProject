@@ -36,9 +36,9 @@ def user_screen():
 
     # Middle header
     center_frame = tk.Frame(root, bg="#f0f0f0")
-    center_frame.place(relx=0.5, rely=0.5, anchor="center")
+    center_frame.place(relx=0.5, rely=0.2, anchor="n")  # Positioned higher, same as Service Requests
 
-    tk.Label(center_frame, text="Reservations", font=("Arial", 24, "bold"), bg="#f0f0f0").pack()
+    tk.Label(center_frame, text="Reservations", font=("Arial", 20, "bold"), bg="#f0f0f0").pack(pady=(0, 50))
 
     # Bottom frame: Copyright
     bottom_frame = tk.Frame(root, bg="#f0f0f0")

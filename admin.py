@@ -48,7 +48,7 @@ def admin_screen():
     bottom_frame = tk.Frame(root, bg="#f0f0f0")
     bottom_frame.pack(side="bottom", fill="x", pady=5)
 
-    tk.Label(bottom_frame, text="Copyright © NoRefundsInn 2024", font=("Arial", 10), bg="#f0f0f0", anchor="e").pack(side="right", padx=10)
+    tk.Label(bottom_frame, text="© NoRefundsInn 2024", font=("Arial", 10), bg="#f0f0f0", anchor="e").pack(side="right", padx=10)
 
     root.mainloop()
 

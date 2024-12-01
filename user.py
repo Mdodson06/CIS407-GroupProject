@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from PIL import Image, ImageTk
+import Decomment as Backend #TO DO: Change when file name changed
 
 def user_screen():
     # Main window setup
@@ -49,7 +50,12 @@ def user_screen():
 
         # Room number label and dropdown
         tk.Label(book_window, text="Select Room Number:", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
-        room_numbers = ["101", "102", "103", "201", "202", "203"]
+        rooms = Backend.get_available_rooms()
+        print("Rooms:",rooms)
+        room_numbers = []
+        for i in rooms:
+            room_numbers.append(i[0])
+        #room_numbers = ["101", "102", "103", "201", "202", "203"]
         room_number_combobox = ttk.Combobox(book_window, values=room_numbers, state="readonly", width=20)
         room_number_combobox.pack(pady=10)
 
@@ -60,6 +66,11 @@ def user_screen():
             "Suite": 200
         }
 
+        #room_prices = []
+        #for i in rooms:
+        #    room_prices.append(i[2])
+            
+        
         # Function to update the total based on selected room type
         def update_total(event):
             room_type = room_type_combobox.get()
@@ -101,7 +112,11 @@ def user_screen():
 
         # Room number label and combo box
         tk.Label(services_window, text="Select Room Number:", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
-        room_numbers = ["101", "102", "103", "201", "202", "203"]
+        rooms = Backend.get_available_rooms()
+        room_numbers = []
+        for i in rooms:
+            room_number = i[0]
+        #room_numbers = ["101", "102", "103", "201", "202", "203"]
         room_number_combobox = ttk.Combobox(services_window, values=room_numbers, state="readonly", width=20)
         room_number_combobox.pack(pady=10)
 
@@ -181,4 +196,5 @@ def user_screen():
     root.mainloop()
 
 if __name__ == "__main__":
+    Backend.create_db()
     user_screen()

@@ -1,6 +1,6 @@
 import sqlite3
 from tkinter import *
-#from datetime import datetime
+from datetime import datetime
 cursor = ''
 con = ''
 
@@ -192,7 +192,9 @@ def get_available_rooms(room_number=-1,checkInDate="NA", checkOutDate="NA", cost
   
     cursor.execute(query, queryNeeds)
     con.commit()
-    return cursor.fetchall()
+    check = cursor.fetchall()
+    print("Check:",check)
+    return check
 
 def get_servicetype():
     query = "SELECT * FROM ServiceType"
@@ -477,12 +479,22 @@ if __name__ == "__main__":
     
     create_db()
     
-    '''TESTING: 
+    #TESTING: 
     drop_tables()
     create_db()
     insert_room(111,"RoomType",5.12)
     insert_room(414,"RoomType2",100.00)
     insert_room(000,"RoomType2",4400.00)
+    '''Inserted prior:
+    insert_room(101,"Single",100)
+    insert_room(102,"Single",100.00)
+    insert_room(103,"Single",100.00)
+    insert_room(201,"Double",100.00)
+    insert_room(202,"Double",100.00)
+    insert_room(203,"Suite",100.00)
+
+    insert_room(414,"Single",100.00)
+    insert_room(000,"RoomType2",4400.00)'''
     print("All rooms:",get_available_rooms())
     update_room(414,cost=500)
     print("Updated cost:",get_available_rooms())
@@ -575,8 +587,8 @@ if __name__ == "__main__":
     print("\tPaid:",get_booking(1))
 
     check_out(1)
-    print("\tChecked out:",get_booking(1))'''
+    print("\tChecked out:",get_booking(1))
     
-    drop_tables()
+    #drop_tables()
     con.close()
     

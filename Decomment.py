@@ -204,7 +204,8 @@ def get_servicetype(stype=-1):
         return (cursor.fetchall())
     else:
         query = "SELECT servicetype_id FROM ServiceType WHERE type=?"
-        cursor.execute(query,stype)
+        queryNeeds = [stype]
+        cursor.execute(query,queryNeeds)
         con.commit()
         return cursor.fetchall()
     

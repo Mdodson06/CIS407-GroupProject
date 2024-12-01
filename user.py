@@ -136,7 +136,7 @@ def user_screen():
             service = service_combobox.get()
             room_number = room_number_combobox.get()
             if service and room_number:
-                Backend.request_service(Backend.get_bookingID(guestID,room_number),Backend.get_servicetype(service))
+                Backend.request_service(Backend.get_bookingID(guestID,room_number)[0][0],Backend.get_servicetype(service)[0][0])
                 print(Backend.get_unfilled_requests())
                 messagebox.showinfo("Service Requested", f"Service '{service}' has been requested for room {room_number}.")
             else:

@@ -491,9 +491,9 @@ if __name__ == "__main__":
     insert_room(101,"Single",100)
     insert_room(102,"Single",100.00)
     insert_room(103,"Single",100.00)
-    insert_room(201,"Double",100.00)
-    insert_room(202,"Double",100.00)
-    insert_room(203,"Suite",100.00)
+    insert_room(201,"Double",150.00)
+    insert_room(202,"Double",150.00)
+    insert_room(203,"Suite",200.00)
 
     guest_signup("user1","user1@contact.com","12345")
 

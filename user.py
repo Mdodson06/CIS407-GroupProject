@@ -44,7 +44,7 @@ def user_screen():
     def book_now_popup():
         book_window = tk.Toplevel(root)
         book_window.title("Book Now")
-        book_window.geometry("400x400")
+        book_window.geometry("400x500")
         book_window.configure(bg="#f0f0f0")
 
         # Room type label and combo box
@@ -64,36 +64,71 @@ def user_screen():
         room_number_combobox = ttk.Combobox(book_window, values=room_numbers, state="readonly", width=20)
         room_number_combobox.pack(pady=10)
 
-        # Price per room type (dynamic pricing based on room type)
-        room_prices = {
-            "Single": 100,
-            "Double": 150,
-            "Suite": 200
-        }
+        #Get check in
+        tk.Label(book_window, text="Enter check-in date (YYYY-MM-DD):", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
+        checkin_entry = tk.Entry(book_window, font=("Arial", 12), width=25)
+        checkin_entry.pack(pady=10)
 
-        #room_prices = []
-        #for i in rooms:
-        #    room_prices.append(i[2])
+        #Get check out
+        tk.Label(book_window, text="Enter check-out date (YYYY-MM-DD):", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
+        checkout_entry = tk.Entry(book_window, font=("Arial", 12), width=25)
+        checkout_entry.pack(pady=10)
+        
+
+
+        # Price per room type (dynamic pricing based on room type)
+        #room_prices = {
+        #    "Single": 100,
+        #    "Double": 150,
+        #    "Suite": 200
+        #}
+
+        room_prices = {}
+        for i in rooms:
+            room_prices.update({i[1]:i[2]})
             
         
         # Function to update the total based on selected room type
-        def update_total(event):
+        def update_total(event):        
             room_type = room_type_combobox.get()
             total_price = room_prices.get(room_type, 0)
-            total_label.config(text=f"Total: ${total_price}")
+            total_label.config(text=f"Total: ${total_price:.2f}")
+            rooms = Backend.get_available_rooms(roomType=room_type)
+            room_numbers = []
+            for i in rooms:
+                room_numbers.append(i[0])
+            room_number_combobox.configure(values=room_numbers)
 
         # Bind the change in room type selection to update total
         room_type_combobox.bind("<<ComboboxSelected>>", update_total)
 
         # Book Now button and total display
         def book_room():
+            flag = False
+            checkin_date = ''
+            checkout_date = ''
+            try:
+                checkin = checkin_entry.get().split("-")
+                checkout = checkout_entry.get().split("-")
+                print("split success")
+                for i in range(3):
+                    checkin[i] = int(checkin[i])
+                    checkout[i] = int(checkout[i])
+                print("checkin:",checkin)
+                print("checkout:",checkout)
+                checkin_date = dt.datetime(checkin[0],checkin[1],checkin[2])
+                checkout_date = dt.datetime(checkout[0],checkout[1],checkout[2])
+                flag = True
+            except:
+                messagebox.showerror("Error", "Please enter valid dates")
+            
             room_type = room_type_combobox.get()
             room_number = room_number_combobox.get()
-            bookingCheck = Backend.book_room(guestID, room_number, dt.datetime.now(), dt.datetime.now())
-            if room_type and room_number and (bookingCheck == "Success"):
+            bookingCheck = Backend.book_room(guestID, room_number, checkin_date, checkout_date)
+            if flag and room_type and room_number and (bookingCheck == "Success"):
                 total_price = room_prices.get(room_type, 0)
                 messagebox.showinfo("Booking Successful", f"Room {room_number} ({room_type}) booked successfully!")
-            else:
+            elif flag:
                 messagebox.showerror("Error", "Please select an available room type and room number.")
 
         book_button = tk.Button(book_window, text="Book Now", font=("Arial", 12), command=book_room)

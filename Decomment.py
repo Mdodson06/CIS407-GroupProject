@@ -485,8 +485,8 @@ def check_out(booking_id):
 
 if __name__ == "__main__":
     create_db()
-    #drop_tables()
-    #create_db()
+    drop_tables()
+    create_db()
     #Inserted prior:
     insert_room(101,"Single",100)
     insert_room(102,"Single",100.00)

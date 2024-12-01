@@ -149,10 +149,14 @@ def user_screen():
     def payments_popup():
         payment_window = tk.Toplevel(root)
         payment_window.title("Make Payment")
-        payment_window.geometry("400x400")
+        payment_window.geometry("400x600")
         payment_window.configure(bg="#f0f0f0")
 
         # Credit Card Information
+        tk.Label(payment_window, text="Enter room number:", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
+        room_number_entry = tk.Entry(payment_window, font=("Arial", 12), width=25)
+        room_number_entry.pack(pady=10)
+
         tk.Label(payment_window, text="Enter Card Number:", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
         card_number_entry = tk.Entry(payment_window, font=("Arial", 12), width=25)
         card_number_entry.pack(pady=10)
@@ -165,17 +169,30 @@ def user_screen():
         cvv_entry = tk.Entry(payment_window, font=("Arial", 12), width=25, show="*")
         cvv_entry.pack(pady=10)
 
+        tk.Label(payment_window, text="Enter amount you wish to pay:", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
+        amt_entry = tk.Entry(payment_window, font=("Arial", 12), width=25)
+        amt_entry.pack(pady=10)
+
+
         # Function to process payment
         def process_payment():
+            room_number = room_number_entry.get()
             card_number = card_number_entry.get()
             expiry_date = expiry_entry.get()
             cvv = cvv_entry.get()
-            
-            # Simple validation for payment information (just checking if fields are filled)
-            if card_number and expiry_date and cvv:
-                messagebox.showinfo("Payment Successful", "Your payment has been processed successfully!")
-            else:
-                messagebox.showerror("Error", "Please fill in all payment details.")
+            amt = amt_entry.get()
+            bookingID = ''
+            try:
+                room_number = int(room_number)
+                bookingID = Backend.get_bookingID(guestID,room_number)[0][0]
+                amt = int(amt)
+            finally:
+                # Simple validation for payment information (just checking if fields are filled)
+                if bookingID and card_number and expiry_date and cvv and amt and isinstance(amt,int):
+                    Backend.make_payment(bookingID=bookingID,amt=amt,payment_method="Credit card", card_number=card_number)
+                    messagebox.showinfo("Payment Successful", "Your payment has been processed successfully!")
+                else:
+                    messagebox.showerror("Error", "Please fill in all payment details.")
 
         # Submit Payment button
         submit_button = tk.Button(payment_window, text="Submit Payment", font=("Arial", 12), command=process_payment)
@@ -199,7 +216,7 @@ def user_screen():
     center_frame.place(relx=0.5, rely=0.2, anchor="n")
 
     tk.Label(center_frame, text="Reservations", font=("Arial", 20, "bold"), bg="#f0f0f0").pack(pady=(0, 50))
-
+    
     # Bottom frame: Copyright
     bottom_frame = tk.Frame(root, bg="#f0f0f0")
     bottom_frame.pack(side="bottom", fill="x", pady=5)

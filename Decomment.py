@@ -193,14 +193,21 @@ def get_available_rooms(room_number=-1,checkInDate="NA", checkOutDate="NA", cost
     cursor.execute(query, queryNeeds)
     con.commit()
     check = cursor.fetchall()
-    print("Check:",check)
+    #print("Check:",check)
     return check
 
-def get_servicetype():
-    query = "SELECT * FROM ServiceType"
-    cursor.execute(query)
-    con.commit()
-    return (cursor.fetchall())
+def get_servicetype(stype=-1):
+    if(stype == -1):
+        query = "SELECT * FROM ServiceType"
+        cursor.execute(query)
+        con.commit()
+        return (cursor.fetchall())
+    else:
+        query = "SELECT servicetype_id FROM ServiceType WHERE type=?"
+        cursor.execute(query,stype)
+        con.commit()
+        return cursor.fetchall()
+    
 
 #11/27/24 NOTE: removed need to get the datetime
 def get_bookingID(guestID, roomNumber):
@@ -476,16 +483,10 @@ def check_out(booking_id):
     '''
 
 if __name__ == "__main__":
-    
     create_db()
-    
-    #TESTING: 
-    drop_tables()
-    create_db()
-    insert_room(111,"RoomType",5.12)
-    insert_room(414,"RoomType2",100.00)
-    insert_room(000,"RoomType2",4400.00)
-    '''Inserted prior:
+    #drop_tables()
+    #create_db()
+    #Inserted prior:
     insert_room(101,"Single",100)
     insert_room(102,"Single",100.00)
     insert_room(103,"Single",100.00)
@@ -493,8 +494,22 @@ if __name__ == "__main__":
     insert_room(202,"Double",100.00)
     insert_room(203,"Suite",100.00)
 
-    insert_room(414,"Single",100.00)
-    insert_room(000,"RoomType2",4400.00)'''
+    guest_signup("user1","user1@contact.com","12345")
+
+    staff_signup("admin","admin@contact.com","12345")
+
+    insert_servicetype("Service name",10.00)
+    insert_servicetype("Service2 name",30.00)
+    insert_servicetype("Service3 name",42.00)
+    '''create_db()
+    
+    #TESTING: 
+    drop_tables()
+    create_db()
+    insert_room(111,"RoomType",5.12)
+    insert_room(414,"RoomType2",100.00)
+    insert_room(000,"RoomType2",4400.00)
+    
     print("All rooms:",get_available_rooms())
     update_room(414,cost=500)
     print("Updated cost:",get_available_rooms())
@@ -589,6 +604,6 @@ if __name__ == "__main__":
     check_out(1)
     print("\tChecked out:",get_booking(1))
     
-    #drop_tables()
+    drop_tables()'''
     con.close()
     

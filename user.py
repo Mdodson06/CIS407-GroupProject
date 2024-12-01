@@ -3,8 +3,13 @@ from tkinter import messagebox
 from tkinter import ttk
 from PIL import Image, ImageTk
 import Decomment as Backend #TO DO: Change when file name changed
-
+import datetime as dt
 def user_screen():
+    guestID = 1
+    name = "user1"
+    contact = "user1@contact.com"
+    password = "12345"
+    print(Backend.get_booking())
     # Main window setup
     root = tk.Tk()
     root.title("User Dashboard")
@@ -84,11 +89,12 @@ def user_screen():
         def book_room():
             room_type = room_type_combobox.get()
             room_number = room_number_combobox.get()
-            if room_type and room_number:
+            bookingCheck = Backend.book_room(guestID, room_number, dt.datetime.now(), dt.datetime.now())
+            if room_type and room_number and (bookingCheck == "Success"):
                 total_price = room_prices.get(room_type, 0)
                 messagebox.showinfo("Booking Successful", f"Room {room_number} ({room_type}) booked successfully!")
             else:
-                messagebox.showerror("Error", "Please select a room type and room number.")
+                messagebox.showerror("Error", "Please select an available room type and room number.")
 
         book_button = tk.Button(book_window, text="Book Now", font=("Arial", 12), command=book_room)
         book_button.pack(pady=20)
@@ -106,16 +112,21 @@ def user_screen():
 
         # Service type label and combo box
         tk.Label(services_window, text="Select Service:", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
-        services = ["Room Cleaning", "Food Delivery", "Maintenance"]
+        service_list = Backend.get_servicetype() #["Room Cleaning", "Food Delivery", "Maintenance"]
+        services = []
+        for i in service_list:
+            services.append(i[1])
         service_combobox = ttk.Combobox(services_window, values=services, state="readonly", width=20)
         service_combobox.pack(pady=10)
 
         # Room number label and combo box
         tk.Label(services_window, text="Select Room Number:", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
-        rooms = Backend.get_available_rooms()
+        rooms = Backend.get_booking(guestName="user1")#TO DO: Backend.get_booking(guestID)
+        print("user rooms:",rooms)
         room_numbers = []
         for i in rooms:
-            room_number = i[0]
+            room_numbers.append(i[2])
+        print("user room_number:",room_numbers)
         #room_numbers = ["101", "102", "103", "201", "202", "203"]
         room_number_combobox = ttk.Combobox(services_window, values=room_numbers, state="readonly", width=20)
         room_number_combobox.pack(pady=10)
@@ -125,6 +136,8 @@ def user_screen():
             service = service_combobox.get()
             room_number = room_number_combobox.get()
             if service and room_number:
+                Backend.request_service(Backend.get_bookingID(guestID,room_number),Backend.get_servicetype(service))
+                print(Backend.get_unfilled_requests())
                 messagebox.showinfo("Service Requested", f"Service '{service}' has been requested for room {room_number}.")
             else:
                 messagebox.showerror("Error", "Please select a service and a room number.")

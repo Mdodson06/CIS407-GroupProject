@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from PIL import Image, ImageTk
-import Decomment as Backend #TO DO: Change when file name changed
+import SQL_connection as Backend #TO DO: Change when file name changed
 import datetime as dt
 def user_screen():
     guestID = 1

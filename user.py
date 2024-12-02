@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from PIL import Image, ImageTk
-import SQL_connection as Backend #TO DO: Change when file name changed
+import SQL_connection as Backend 
 import datetime as dt
 def user_screen():
     guestID = 1
@@ -47,6 +47,17 @@ def user_screen():
         book_window.geometry("400x500")
         book_window.configure(bg="#f0f0f0")
 
+        #Get room
+        rooms = Backend.get_available_rooms()
+
+        room_numbers = []
+        for i in rooms:
+            room_numbers.append(i[0])
+
+        type_price = {}
+        for i in rooms:
+            type_price.update({i[1]:i[2]})
+
         # Room type label and combo box
         tk.Label(book_window, text="Select Room Type:", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
         room_types = ["Single", "Double", "Suite"]
@@ -55,11 +66,6 @@ def user_screen():
 
         # Room number label and dropdown
         tk.Label(book_window, text="Select Room Number:", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
-        rooms = Backend.get_available_rooms()
-        print("Rooms:",rooms)
-        room_numbers = []
-        for i in rooms:
-            room_numbers.append(i[0])
         #room_numbers = ["101", "102", "103", "201", "202", "203"]
         room_number_combobox = ttk.Combobox(book_window, values=room_numbers, state="readonly", width=20)
         room_number_combobox.pack(pady=10)
@@ -73,25 +79,12 @@ def user_screen():
         tk.Label(book_window, text="Enter check-out date (YYYY-MM-DD):", font=("Arial", 12), bg="#f0f0f0").pack(pady=10)
         checkout_entry = tk.Entry(book_window, font=("Arial", 12), width=25)
         checkout_entry.pack(pady=10)
-        
-
-
-        # Price per room type (dynamic pricing based on room type)
-        #room_prices = {
-        #    "Single": 100,
-        #    "Double": 150,
-        #    "Suite": 200
-        #}
-
-        room_prices = {}
-        for i in rooms:
-            room_prices.update({i[1]:i[2]})
             
         
         # Function to update the total based on selected room type
         def update_total(event):        
             room_type = room_type_combobox.get()
-            total_price = room_prices.get(room_type, 0)
+            total_price = type_price.get(room_type, 0)
             total_label.config(text=f"Total: ${total_price:.2f}")
             rooms = Backend.get_available_rooms(roomType=room_type)
             room_numbers = []
@@ -126,7 +119,7 @@ def user_screen():
             room_number = room_number_combobox.get()
             bookingCheck = Backend.book_room(guestID, room_number, checkin_date, checkout_date)
             if flag and room_type and room_number and (bookingCheck == "Success"):
-                total_price = room_prices.get(room_type, 0)
+                total_price = type_price.get(room_type, 0)
                 messagebox.showinfo("Booking Successful", f"Room {room_number} ({room_type}) booked successfully!")
             elif flag:
                 messagebox.showerror("Error", "Please select an available room type and room number.")
@@ -244,13 +237,34 @@ def user_screen():
         tk.Button(sidebar, text=text, width=20, command=command).pack(pady=10)
 
     # Log Out button (no pop-up for this one)
-    tk.Button(sidebar, text="Log Out", width=20, bg="red", fg="white").pack(side="bottom", pady=10)
-
+    #NOTE: Kills the program entirely
+    tk.Button(sidebar, text="Log Out", width=20, command=root.destroy,bg="red", fg="white").pack(side="bottom", pady=10)
+    
     # Middle header
     center_frame = tk.Frame(root, bg="#f0f0f0")
-    center_frame.place(relx=0.5, rely=0.2, anchor="n")
-
+    center_frame.place(relx=0.51, rely=0.2, anchor="n")
+    
     tk.Label(center_frame, text="Reservations", font=("Arial", 20, "bold"), bg="#f0f0f0").pack(pady=(0, 50))
+    bookings = Backend.get_booking(guestID)
+    print(bookings)
+    reservation_frame = tk.Frame(root)
+    reservation_frame.place(relx=.55, rely=0.3, anchor="n")
+    tk.Label(reservation_frame,text="Room number\tCheck-in\t\tCheck-out\t\tTotal Costs",font=("Arial",12,"underline"),bg="#f0f0f0").pack()
+    for i in bookings:
+        tempBooking = str(i[2])+'\t     '+i[3][:10]+'\t     '+i[4][:10]+'\t     '+f'{i[5]:.2f}\t'
+        tk.Label(reservation_frame,text=tempBooking,font=("Arial",12),bg="#f0f0f0").pack()
+    #Scrollbar for reservations
+    '''
+    
+    scroll_bar = tk.Scrollbar(center_frame)
+    scroll_bar.pack()
+    reservation_scroll = tk.Listbox(center_frame,yscrollcommand = scroll_bar.set ) 
+
+    for i in bookings:
+        reservation_scroll.insert(tk.END, str(i)) 
+    reservation_scroll.pack()
+    scroll_bar.config( command = reservation_scroll.yview ) 
+    '''
     
     # Bottom frame: Copyright
     bottom_frame = tk.Frame(root, bg="#f0f0f0")

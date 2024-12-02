@@ -91,8 +91,108 @@ def admin_screen():
         save_button = tk.Button(rooms_window, text="Save Changes", font=("Arial", 12), command=save_room_details)
         save_button.pack(pady=20)
 
+    def add_service_popup():
+        # Services pop-up window
+        services_window = tk.Toplevel(root)
+        services_window.title("Add Service")
+        services_window.geometry("400x200")
+        services_window.configure(bg="#f0f0f0")
+
+        # Label for instruction
+        tk.Label(services_window, text="Add Service", font=("Arial", 14), bg="#f0f0f0").pack(pady=10)
+
+        # Text box to input the service
+        service_entry = tk.Entry(services_window, width=30, font=("Arial", 12))
+        service_entry.pack(pady=10)
+
+        # Function to handle adding the service
+        def add_service():
+            service_name = service_entry.get().strip()
+            if service_name:
+                # Simulate saving the service to a data source
+                messagebox.showinfo("Success", f"Service '{service_name}' has been added!")
+                services_window.destroy()
+            else:
+                messagebox.showerror("Error", "Please enter a service name.")
+
+        # Button to confirm adding the service
+        tk.Button(services_window, text="Add Service", font=("Arial", 12), command=add_service).pack(pady=20)
+
+    def bookings_popup():
+        # Bookings pop-up window
+        bookings_window = tk.Toplevel(root)
+        bookings_window.title("Bookings")
+        bookings_window.geometry("400x300")
+        bookings_window.configure(bg="#f0f0f0")
+
+        # Label for instruction
+        tk.Label(bookings_window, text="Guest Booking", font=("Arial", 14), bg="#f0f0f0").pack(pady=10)
+
+        # Frame for buttons
+        button_frame = tk.Frame(bookings_window, bg="#f0f0f0")
+        button_frame.pack(pady=10)
+
+        def check_in_guest():
+            # Check-in pop-up window
+            check_in_window = tk.Toplevel(bookings_window)
+            check_in_window.title("Check In Guest")
+            check_in_window.geometry("400x200")
+            check_in_window.configure(bg="#f0f0f0")
+
+            tk.Label(check_in_window, text="Guest ID:", font=("Arial", 12), bg="#f0f0f0").pack(pady=5)
+            guest_id_entry = tk.Entry(check_in_window, width=30, font=("Arial", 12))
+            guest_id_entry.pack(pady=5)
+
+            tk.Label(check_in_window, text="Select Room:", font=("Arial", 12), bg="#f0f0f0").pack(pady=5)
+            rooms = ["101", "102", "103", "201", "202", "203"]  # Example room numbers
+            room_combobox = ttk.Combobox(check_in_window, values=rooms, state="readonly", width=28)
+            room_combobox.pack(pady=5)
+
+            def confirm_check_in():
+                guest_id = guest_id_entry.get().strip()
+                room = room_combobox.get()
+                if guest_id and room:
+                    # Simulate check-in logic
+                    messagebox.showinfo("Success", f"Guest {guest_id} checked into Room {room}.")
+                    check_in_window.destroy()
+                else:
+                    messagebox.showerror("Error", "Please fill out all fields.")
+
+            tk.Button(check_in_window, text="Confirm Check In", font=("Arial", 12), command=confirm_check_in).pack(pady=20)
+
+        def check_out_guest():
+            # Check-out pop-up window
+            check_out_window = tk.Toplevel(bookings_window)
+            check_out_window.title("Check Out Guest")
+            check_out_window.geometry("400x200")
+            check_out_window.configure(bg="#f0f0f0")
+
+            tk.Label(check_out_window, text="Guest ID:", font=("Arial", 12), bg="#f0f0f0").pack(pady=5)
+            guest_id_entry = tk.Entry(check_out_window, width=30, font=("Arial", 12))
+            guest_id_entry.pack(pady=5)
+
+            tk.Label(check_out_window, text="Select Room:", font=("Arial", 12), bg="#f0f0f0").pack(pady=5)
+            rooms = ["101", "102", "103", "201", "202", "203"]  # Example room numbers
+            room_combobox = ttk.Combobox(check_out_window, values=rooms, state="readonly", width=28)
+            room_combobox.pack(pady=5)
+
+            def confirm_check_out():
+                guest_id = guest_id_entry.get().strip()
+                room = room_combobox.get()
+                if guest_id and room:
+                    # Simulate check-out logic
+                    messagebox.showinfo("Success", f"Guest {guest_id} checked out from Room {room}.")
+                    check_out_window.destroy()
+                else:
+                    messagebox.showerror("Error", "Please fill out all fields.")
+
+            tk.Button(check_out_window, text="Confirm Check Out", font=("Arial", 12), command=confirm_check_out).pack(pady=20)
+
+        # Buttons for check-in and check-out
+        tk.Button(button_frame, text="Check In", font=("Arial", 12), command=check_in_guest).pack(side="left", padx=10)
+        tk.Button(button_frame, text="Check Out", font=("Arial", 12), command=check_out_guest).pack(side="left", padx=10)
     # Button to show the Rooms pop-up
-    buttons = [("Rooms", show_rooms_popup), ("Services", None), ("Bookings", None)]
+    buttons = [("Rooms", show_rooms_popup), ("Services", add_service_popup), ("Bookings", bookings_popup)]
     for text, command in buttons:
         tk.Button(sidebar, text=text, width=20, command=command).pack(pady=10)
 

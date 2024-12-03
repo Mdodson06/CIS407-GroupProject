@@ -117,7 +117,8 @@ def user_screen():
             
             room_type = room_type_combobox.get()
             room_number = room_number_combobox.get()
-            bookingCheck = Backend.book_room(guestID, room_number, checkin_date, checkout_date)
+            if flag:
+                bookingCheck = Backend.book_room(guestID, room_number, checkin_date, checkout_date)
             if flag and room_type and room_number and (bookingCheck == "Success"):
                 total_price = type_price.get(room_type, 0)
                 messagebox.showinfo("Booking Successful", f"Room {room_number} ({room_type}) booked successfully!")
@@ -168,6 +169,7 @@ def user_screen():
                 Backend.request_service(Backend.get_bookingID(guestID,room_number)[0][0],Backend.get_servicetype(service)[0][0])
                 print(Backend.get_unfilled_requests())
                 messagebox.showinfo("Service Requested", f"Service '{service}' has been requested for room {room_number}.")
+                updateReservations()
             else:
                 messagebox.showerror("Error", "Please select a service and a room number.")
 
@@ -220,6 +222,7 @@ def user_screen():
                 if bookingID and card_number and expiry_date and cvv and amt and isinstance(amt,int):
                     Backend.make_payment(bookingID=bookingID,amt=amt,payment_method="Credit card", card_number=card_number)
                     messagebox.showinfo("Payment Successful", "Your payment has been processed successfully!")
+                    updateReservations()
                 else:
                     messagebox.showerror("Error", "Please fill in all payment details.")
 

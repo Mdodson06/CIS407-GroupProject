@@ -485,6 +485,7 @@ def check_out(booking_id):
 
 if __name__ == "__main__":
     create_db()
+    print(get_booking(1))
     drop_tables()
     create_db()
     #Inserted prior:
@@ -504,7 +505,7 @@ if __name__ == "__main__":
     insert_servicetype("Clean room",42.00)
     insert_servicetype("Laundry",12.00)
     print("Unfilled requests:",get_unfilled_requests())
-
+    
     
 
     '''create_db()

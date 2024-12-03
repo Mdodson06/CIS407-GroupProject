@@ -121,6 +121,7 @@ def user_screen():
             if flag and room_type and room_number and (bookingCheck == "Success"):
                 total_price = type_price.get(room_type, 0)
                 messagebox.showinfo("Booking Successful", f"Room {room_number} ({room_type}) booked successfully!")
+                updateReservations()
             elif flag:
                 messagebox.showerror("Error", "Please select an available room type and room number.")
 
@@ -241,18 +242,20 @@ def user_screen():
     tk.Button(sidebar, text="Log Out", width=20, command=root.destroy,bg="red", fg="white").pack(side="bottom", pady=10)
     
     # Middle header
+    def updateReservations():
+        bookings = Backend.get_booking(guestID)
+        print(bookings)
+        reservation_frame = tk.Frame(root)
+        reservation_frame.place(relx=.55, rely=0.3, anchor="n")
+        tk.Label(reservation_frame,text="Room number\tCheck-in\t\tCheck-out\t\tTotal Costs",font=("Arial",12,"underline"),bg="#f0f0f0").pack()
+        for i in bookings:
+            tempBooking = str(i[2])+'\t     '+i[3][:10]+'\t     '+i[4][:10]+'\t     '+f'{i[5]:.2f}\t'
+            tk.Label(reservation_frame,text=tempBooking,font=("Arial",12),bg="#f0f0f0").pack()
+    
     center_frame = tk.Frame(root, bg="#f0f0f0")
     center_frame.place(relx=0.51, rely=0.2, anchor="n")
-    
     tk.Label(center_frame, text="Reservations", font=("Arial", 20, "bold"), bg="#f0f0f0").pack(pady=(0, 50))
-    bookings = Backend.get_booking(guestID)
-    print(bookings)
-    reservation_frame = tk.Frame(root)
-    reservation_frame.place(relx=.55, rely=0.3, anchor="n")
-    tk.Label(reservation_frame,text="Room number\tCheck-in\t\tCheck-out\t\tTotal Costs",font=("Arial",12,"underline"),bg="#f0f0f0").pack()
-    for i in bookings:
-        tempBooking = str(i[2])+'\t     '+i[3][:10]+'\t     '+i[4][:10]+'\t     '+f'{i[5]:.2f}\t'
-        tk.Label(reservation_frame,text=tempBooking,font=("Arial",12),bg="#f0f0f0").pack()
+    updateReservations()
     #Scrollbar for reservations
     '''
     
@@ -276,4 +279,5 @@ def user_screen():
 
 if __name__ == "__main__":
     Backend.create_db()
+    print("Requests:",Backend.get_unfilled_requests())
     user_screen()

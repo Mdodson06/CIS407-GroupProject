@@ -499,9 +499,14 @@ if __name__ == "__main__":
 
     staff_signup("admin","admin@contact.com","12345")
 
-    insert_servicetype("Service name",10.00)
-    insert_servicetype("Service2 name",30.00)
-    insert_servicetype("Service3 name",42.00)
+    insert_servicetype("Repair TV",10.00)
+    insert_servicetype("Room service",30.00)
+    insert_servicetype("Clean room",42.00)
+    insert_servicetype("Laundry",12.00)
+    print("Unfilled requests:",get_unfilled_requests())
+
+    
+
     '''create_db()
     
     #TESTING: 
